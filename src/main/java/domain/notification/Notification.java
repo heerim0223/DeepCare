@@ -22,11 +22,11 @@ public class Notification {
     private String id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "recipient_user_id")
     private User user;
 
     @Column(name = "type", length = 50)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Type type;
 
     @Column(name = "title", length = 200)

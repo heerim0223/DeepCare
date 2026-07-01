@@ -31,7 +31,7 @@ public class SessionParticipant {
 
     // Column ID: related_family_member_id
     @ManyToOne
-    @JoinColumn(name = "family_member_id", nullable = true)
+    @JoinColumn(name = "related_family_member_id", nullable = true)
     private ClientFamilyMember clientFamilyMember;
 
     @Column(name = "created_at")

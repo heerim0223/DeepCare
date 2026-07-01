@@ -16,7 +16,7 @@ public class InvitationCodeController {
 
     // INV-2: 초대코드 검증
     @GetMapping(path = "/{code}/verify")
-    public String verification(@PathVariable String code) {
+    public String verification(@PathVariable("code") String code) {
         // TODO: 비로그인 상태 호출 가능 — 역할·기관명 반환
         return "";
     }
@@ -29,8 +29,8 @@ public class InvitationCodeController {
     }
 
     // INV-4: 초대코드 취소
-    @DeleteMapping(path = "/{code}")
-    public String cancellation() {
+    @DeleteMapping("/{code}")
+    public String cancellation(@PathVariable("code") String code) {
         // TODO: 미사용 코드 무효화
         return "";
     }

@@ -23,7 +23,7 @@ import java.util.List;
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id")
-    private Long id;
+    private String id;
 
     @Column(name = "email", length = 255)
     private String email;
@@ -38,12 +38,12 @@ public class User {
     private String phone;
 
     @Column(name = "user_type", length = 30)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private UserType userType;
 
     @Column(name = "status", length = 20)
     @ColumnDefault("'ACTIVE'")
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @Column(name = "last_login_at", nullable = true)
@@ -54,11 +54,6 @@ public class User {
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    @CreatedDate
+    @LastModifiedDate
     private LocalDateTime updatedAt;
-
-    // ====
-    @Transient
-    @OneToMany(targetEntity = Client.class, mappedBy = "user")
-    private List<Client> clients = new ArrayList<>();
 }

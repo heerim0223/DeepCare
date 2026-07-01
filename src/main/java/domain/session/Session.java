@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,26 +39,26 @@ public class Session {
     @Column(name = "session_duration_min")
     private Integer durationMin;
 
-    @Enumerated
     @Column(name = "session_method", length = 20)
+    @Enumerated(EnumType.STRING)
     private Method method;
 
     @Column(name = "session_location", length = 100, nullable = true)
     private String location;
 
-    @Enumerated
     @Column(name = "session_type", length = 30)
+    @Enumerated(EnumType.STRING)
     private Type type;
 
     @Column(name = "session_number")
     private Integer number;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "worker_user_id")
     private User workerUser;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true)
+    @JoinColumn(name = "supervisor_user_id", nullable = true)
     private User supervisorUser;
 
     @Column(name = "status", length = 20)
@@ -72,6 +73,6 @@ public class Session {
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    @CreatedDate
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 }

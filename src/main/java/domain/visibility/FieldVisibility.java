@@ -29,7 +29,7 @@ public class FieldVisibility {
     private String fieldKey;
 
     @Column(name = "visibility", length = 20)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Visibility visibility;
 
     @Column(name = "is_visible_to_client")
@@ -38,7 +38,7 @@ public class FieldVisibility {
 
     // Column ID: set_by_user_id
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "set_by_user_id")
     private User user;
 
     @Column(name = "set_at")

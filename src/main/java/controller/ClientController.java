@@ -22,36 +22,41 @@ public class ClientController {
     }
 
     // C-3: 클라이언트 상세 조회
-    @GetMapping(path = "/{clientId}")
-    public String getClient(@PathVariable String clientId) {
+    @GetMapping("/{client_id}")
+    public String getClient(@PathVariable("client_id") String clientId) {
         return "";
     }
 
     // C-4: 클라이언트 정보 수정
-    public String updateClient() {
+    @PatchMapping("/{client_id}")
+    public String updateClient(@PathVariable("client_id") String clientId) {
         return "";
     }
 
     // C-5: 클라이언트 삭제(비활성화)
-    public String deactivateClient() {
+    @DeleteMapping("/{client_id}")
+    public String deactivateClient(@PathVariable("client_id") String clientId) {
         // TODO: 소프트 삭제
         return "";
     }
 
     // C-6: 클라이언트 검색
-    public String searchClient() {
+    @GetMapping("/search")
+    public String searchClient(@RequestParam String q) {
         // TODO: 이름·연락처 검색
         return "";
     }
 
     // C-7: 내담자 앱 접근 링크 발송
-    public String sendAccessLink() {
+    @PostMapping("/{client_id}/app-access")
+    public String sendAccessLink(@PathVariable("client_id") String clientId) {
         // TODO: 사회복지사 → SMS/이메일 발송
         return "";
     }
 
     // C-8: 내담자 앱 접근 링크 상태 조회
-    public String getAccessLinkStatus() {
+    @GetMapping("/{client_id}/app-access")
+    public String getAccessLinkStatus(@PathVariable("client_id") String clientId) {
         // TODO: status: pending | joined | expired
         return "";
     }

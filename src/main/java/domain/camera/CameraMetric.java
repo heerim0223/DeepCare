@@ -17,7 +17,16 @@ import java.time.LocalDateTime;
 @Table(name = "camera_metrics")
 public class CameraMetric {
     @Id
-    @ManyToOne
+    @Column(name = "session_id")
+    private Session sessionId;
+
+    /*
+        @ManyToOne(PK 공유 방식)에서
+        @OneToOne + @MapsId 조합(최신 JPA 방식)으로 수정
+    */
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
     @JoinColumn(name = "session_id")
     private Session session;
 
@@ -36,7 +45,7 @@ public class CameraMetric {
     @Column(name = "stress_index_est", nullable = true)
     private Integer stressIndexEst;
 
-    @Column(name = "emotion_destribution_json", nullable = true)
+    @Column(name = "emotion_distribution_json", nullable = true)
     private String emotionDistributionJson;
 
     @Column(name = "abnormal_flag")

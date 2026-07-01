@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -20,7 +22,6 @@ public class Client {
     @Column(name = "client_id")
     private String id;
 
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "client_user_id", nullable = true)
     private String userId;
 
@@ -28,10 +29,10 @@ public class Client {
     private String name;
 
     @Column(name = "birth_date")
-    private LocalDateTime birthDate;
+    private LocalDate birthDate;
 
     @Column(name = "gender")
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @Column(name = "contact_phone", length = 30)
@@ -44,6 +45,7 @@ public class Client {
     private String address;
 
     @Column(name = "address_type", length = 50, nullable = true)
+    @Enumerated(EnumType.STRING)
     private AddressType addressType;
 
     @Column(name = "nationality", length = 50, nullable = true)
@@ -61,7 +63,7 @@ public class Client {
     private User user;
 
     @Column(name = "intake_date")
-    private LocalDateTime intakeDate;
+    private LocalDate intakeDate;
 
     @Column(name = "referral_source", length = 100, nullable = true)
     private String referralSource;
@@ -71,6 +73,6 @@ public class Client {
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    @CreatedDate
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 }

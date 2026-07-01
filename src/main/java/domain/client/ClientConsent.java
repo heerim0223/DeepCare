@@ -52,7 +52,7 @@ public class ClientConsent {
     @ColumnDefault("false")
     private Boolean withdrawYn;
 
-    @Column(name = "consent_withdraw_date", nullable = false)
+    @Column(name = "consent_withdraw_date", nullable = true)
     private LocalDateTime withdrawDate;
 
     @ManyToOne

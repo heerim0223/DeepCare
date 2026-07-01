@@ -16,14 +16,23 @@ import java.time.LocalDateTime;
 @Table(name = "client_family_profile")
 public class ClientFamilyProfile {
     @Id
-    @ManyToOne
+    @Column(name = "client_id")
+    private Client clientId;
+
+    /*
+        @ManyToOne(PK 공유 방식)에서
+        @OneToOne + @MapsId 조합(최신 JPA 방식)으로 수정
+    */
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
     @JoinColumn(name = "client_id")
     private Client client;
 
     @Column(name = "household_type", length = 50, nullable = true)
     private String householdType;
 
-    @Column(name = "house_hold_count", nullable = true)
+    @Column(name = "household_count", nullable = true)
     private Integer householdCount;
 
     @Column(name = "key_supporter", length = 200, nullable = true)

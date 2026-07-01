@@ -32,7 +32,7 @@ public class ClientFamilyMember {
     private Integer age;
 
     @Column(name = "cohabitation_status", length = 30, nullable = true)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private CohabitationStatus cohabitationStatus;
 
     @Column(name = "created_at")
