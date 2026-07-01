@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class CameraMetric {
     @Id
     @Column(name = "session_id")
-    private Session sessionId;
+    private String sessionId;
 
     /*
         @ManyToOne(PK 공유 방식)에서

@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class ClientFamilyProfile {
     @Id
     @Column(name = "client_id")
-    private Client clientId;
+    private String clientId;
 
     /*
         @ManyToOne(PK 공유 방식)에서
