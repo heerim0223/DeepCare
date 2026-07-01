@@ -1,0 +1,7 @@
+package com.deepcare.repository.stt;
+
+import com.deepcare.domain.stt.SttTranscript;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface SttTranscriptRepository extends JpaRepository<SttTranscript, String> {
+}
