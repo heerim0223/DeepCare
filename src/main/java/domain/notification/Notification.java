@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -15,24 +16,25 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "notifications")
 public class Notification {
     @Id @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "notification_id")
+    @Column(name = "notification_id", nullable = false)
     private String id;
 
     @ManyToOne
-    @JoinColumn(name = "recipient_user_id")
+    @JoinColumn(name = "recipient_user_id", nullable = false)
     private User user;
 
-    @Column(name = "type", length = 50)
+    @Column(name = "type", length = 50, nullable = false)
     @Enumerated(EnumType.STRING)
     private Type type;
 
-    @Column(name = "title", length = 200)
+    @Column(name = "title", length = 200, nullable = false)
     private String title;
 
-    @Column(name = "body", nullable = true)
+    @Column(name = "body")
     @Lob
     private String body;
 
@@ -40,11 +42,11 @@ public class Notification {
     @JoinColumn(name = "session_id")
     private Session session;
 
-    @Column(name = "is_read")
+    @Column(name = "is_read", nullable = false)
     @ColumnDefault("false")
-    private Boolean isRead;
+    private Boolean isRead = false;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     @CreatedDate
     private LocalDateTime createdAt;
 

@@ -22,38 +22,38 @@ import java.util.List;
 @Table(name = "users")
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "user_id")
+    @Column(name = "user_id", nullable = false)
     private String id;
 
-    @Column(name = "email", length = 255)
+    @Column(name = "email", length = 255, nullable = false)
     private String email;
 
-    @Column(name = "password_hash", length = 255)
+    @Column(name = "password_hash", length = 255, nullable = false)
     private String passwordHash;
 
-    @Column(name = "name", length = 100)
+    @Column(name = "name", length = 100, nullable = false)
     private String name;
 
-    @Column(name = "phone", length = 30, nullable = true)
+    @Column(name = "phone", length = 30)
     private String phone;
 
-    @Column(name = "user_type", length = 30)
     @Enumerated(EnumType.STRING)
+    @Column(name = "user_type", length = 30, nullable = false)
     private UserType userType;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 20)
     @ColumnDefault("'ACTIVE'")
-    @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status = Status.ACTIVE;
 
-    @Column(name = "last_login_at", nullable = true)
+    @Column(name = "last_login_at")
     private LocalDateTime lastLoginAt;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     @LastModifiedDate
     private LocalDateTime updatedAt;
 }

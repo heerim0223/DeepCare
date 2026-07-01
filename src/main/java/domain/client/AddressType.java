@@ -1,5 +1,19 @@
 package domain.client;
 
+import lombok.Getter;
+
+@Getter
 public enum AddressType {
-    자가, 전세, 월세, 무주택, 기타
+    OWNER_OCCUPIED("자가"),
+    JEONSE("전세"),
+    MONTHLY_RENT("월세"),
+    HOMELESS("무주택"),
+    OTHER("기타");
+
+    private final String description;
+
+    AddressType(String description) {
+        this.description = description;
+    }
+
 }

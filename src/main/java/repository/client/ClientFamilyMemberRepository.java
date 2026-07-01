@@ -1,7 +1,7 @@
 package repository.client;
 
-import domain.client.ClientFamilyProfile;
+import domain.client.ClientFamilyMember;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ClientFamilyMemberRepository extends JpaRepository<ClientFamilyProfile,String> {
+public interface ClientFamilyMemberRepository extends JpaRepository<ClientFamilyMember,String> {
 }

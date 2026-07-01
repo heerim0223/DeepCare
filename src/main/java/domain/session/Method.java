@@ -1,5 +1,18 @@
 package domain.session;
 
+import lombok.Getter;
+
+@Getter
 public enum Method {
-    대면, 전화, 영상, 방문
+    FACE_TO_FACE("대면"),
+    PHONE("전화"),
+    VIDEO("영상"),
+    VISIT("방문");
+
+    private final String description;
+
+    Method(String description) {
+        this.description = description;
+    }
+
 }

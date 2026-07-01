@@ -16,25 +16,24 @@ import java.time.LocalDateTime;
 @Table(name = "session_participants")
 public class SessionParticipant {
     @Id @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "session_participant_id")
+    @Column(name = "session_participant_id", nullable = false)
     private String id;
 
     @ManyToOne
-    @JoinColumn(name = "session_id")
+    @JoinColumn(name = "session_id", nullable = false)
     private Session session;
 
-    @Column(name = "participant_type", length = 30)
+    @Column(name = "participant_type", length = 30, nullable = false)
     private ParticipantType participantType;
 
-    @Column(name = "name", length = 100, nullable = true)
+    @Column(name = "name", length = 100)
     private String name;
 
-    // Column ID: related_family_member_id
     @ManyToOne
-    @JoinColumn(name = "related_family_member_id", nullable = true)
+    @JoinColumn(name = "related_family_member_id")
     private ClientFamilyMember clientFamilyMember;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     @CreatedDate
     private LocalDateTime createdAt;
 }

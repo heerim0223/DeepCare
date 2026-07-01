@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -15,33 +16,33 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "field_visibility")
 public class FieldVisibility {
     @Id @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "visibility_id")
+    @Column(name = "visibility_id", nullable = false)
     private String id;
 
     @ManyToOne
-    @JoinColumn(name = "client_id")
+    @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
-    @Column(name = "field_key", length = 100)
+    @Column(name = "field_key", length = 100, nullable = false)
     private String fieldKey;
 
-    @Column(name = "visibility", length = 20)
     @Enumerated(EnumType.STRING)
+    @Column(name = "visibility", length = 20, nullable = false)
     private Visibility visibility;
 
-    @Column(name = "is_visible_to_client")
+    @Column(name = "is_visible_to_client", nullable = false)
     @ColumnDefault("false")
-    private Boolean isVisibleToClient;
+    private Boolean isVisibleToClient = false;
 
-    // Column ID: set_by_user_id
     @ManyToOne
-    @JoinColumn(name = "set_by_user_id")
+    @JoinColumn(name = "set_by_user_id", nullable = false)
     private User user;
 
-    @Column(name = "set_at")
+    @Column(name = "set_at", nullable = false)
     @CreatedDate
     private LocalDateTime setAt;
 }

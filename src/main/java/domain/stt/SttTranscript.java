@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -13,31 +15,33 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "stt_transcripts")
 public class SttTranscript {
     @Id @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "transcript_id")
+    @Column(name = "transcript_id", nullable = false)
     private String id;
 
     @ManyToOne
-    @JoinColumn(name = "session_id")
+    @JoinColumn(name = "session_id", nullable = false)
     private Session session;
 
-    @Column(name = "provider", length = 50, nullable = true)
+    @Column(name = "provider", length = 50)
     private String provider;
 
-    @Column(name = "language", length = 10, nullable = true)
-    private String language;
+    @Column(name = "language", length = 10)
+    @ColumnDefault("'ko'")
+    private String language = "ko";
 
-    @Column(name = "raw_text")
     @Lob
+    @Column(name = "raw_text", nullable = false)
     private String rawText;
 
-    @Column(name = "speaker_segments_json", nullable = true)
     @Lob
+    @Column(name = "speaker_segments_json")
     private String speakerSegmentsJson;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     @CreatedDate
     private LocalDateTime createdAt;
 }

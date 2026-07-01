@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -14,10 +16,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "camera_metrics")
 public class CameraMetric {
     @Id
-    @Column(name = "session_id")
+    @Column(name = "session_id", nullable = false)
     private String sessionId;
 
     /*
@@ -27,36 +30,36 @@ public class CameraMetric {
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
-    @JoinColumn(name = "session_id")
+    @JoinColumn(name = "session_id", nullable = false)
     private Session session;
 
-    @Column(name = "consent_camera")
+    @Column(name = "consent_camera", nullable = false)
     private Boolean consentCamera;
 
-    @Column(name = "bp_systolic_est", nullable = true)
+    @Column(name = "bp_systolic_est")
     private Integer bpSystolicEst;
 
-    @Column(name = "bp_diastolic_est", nullable = true)
+    @Column(name = "bp_diastolic_est")
     private Integer bpDiastolicEst;
 
-    @Column(name = "heart_rate_est", nullable = true)
+    @Column(name = "heart_rate_est")
     private Integer heartRateEst;
 
-    @Column(name = "stress_index_est", nullable = true)
+    @Column(name = "stress_index_est")
     private Integer stressIndexEst;
 
-    @Column(name = "emotion_distribution_json", nullable = true)
+    @Column(name = "emotion_distribution_json")
     private String emotionDistributionJson;
 
-    @Column(name = "abnormal_flag")
+    @Column(name = "abnormal_flag", nullable = false)
     @ColumnDefault("false")
-    private Boolean abnormalFlag;
+    private Boolean abnormalFlag = false;
 
-    @Column(name = "abnormal_reason", nullable = true)
+    @Column(name = "abnormal_reason")
     @Lob
     private String abnormalReason;
 
-    @Column(name = "updated_at")
-    @CreatedDate
+    @Column(name = "updated_at", nullable = false)
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 }
