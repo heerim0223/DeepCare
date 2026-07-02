@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@EntityListeners(AutoCloseable.class)
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "session_participants")
 public class SessionParticipant {
     @Id @GeneratedValue(strategy = GenerationType.UUID)
@@ -24,6 +25,7 @@ public class SessionParticipant {
     @JoinColumn(name = "session_id", nullable = false)
     private Session session;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "participant_type", length = 30, nullable = false)
     private ParticipantType participantType;
 
