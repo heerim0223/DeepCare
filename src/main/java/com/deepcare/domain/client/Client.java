@@ -2,10 +2,9 @@ package com.deepcare.domain.client;
 
 import com.deepcare.domain.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -14,8 +13,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
+@Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "clients")
@@ -63,7 +63,7 @@ public class Client {
 
     @ManyToOne
     @JoinColumn(name = "primary_worker_user_id", nullable = false)
-    private User user;
+    private User primaryWorker;
 
     @Column(name = "intake_date", nullable = false)
     private LocalDate intakeDate;
@@ -78,4 +78,29 @@ public class Client {
     @Column(name = "updated_at", nullable = false)
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    // ====
+
+    @Column(name = "deleted", nullable = false)
+    @ColumnDefault("false")
+    private Boolean deleted = false;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
+    public void update(String name, LocalDate birthDate, Gender gender, String contactPhone, String address, String nationality, Boolean disabilityYn, String disabilityType) {
+        this.name = name;
+        this.birthDate = birthDate;
+        this.gender = gender;
+        this.contactPhone = contactPhone;
+        this.address = address;
+        this.nationality = nationality;
+        this.disabilityYn = disabilityYn;
+        this.disabilityType = disabilityType;
+    }
+
+    public void deactivate() {
+        this.deleted = true;
+        this.deletedAt = LocalDateTime.now();
+    }
 }

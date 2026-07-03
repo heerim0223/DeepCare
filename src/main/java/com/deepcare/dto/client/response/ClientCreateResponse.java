@@ -1,4 +1,5 @@
 package com.deepcare.dto.client.response;
 
-public class ClientCreateResponse {
-}
+public record ClientCreateResponse (
+        String clientId
+) {}

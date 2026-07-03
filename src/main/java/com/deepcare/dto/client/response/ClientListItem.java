@@ -2,13 +2,14 @@ package com.deepcare.dto.client.response;
 
 import com.deepcare.domain.client.Client;
 
-public record ClientUpdateResponse (
-        String id,
-        String name,
-        String contactPhone
+// TODO: RiskLevel 필드 추가
+public record ClientListItem(
+    String id,
+    String name,
+    String contactPhone
 ) {
-    public static ClientUpdateResponse from(Client client) {
-        return new ClientUpdateResponse(
+    public static ClientListItem from(Client client) {
+        return new ClientListItem(
                 client.getId(),
                 client.getName(),
                 client.getContactPhone()

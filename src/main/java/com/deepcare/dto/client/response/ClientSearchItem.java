@@ -2,13 +2,14 @@ package com.deepcare.dto.client.response;
 
 import com.deepcare.domain.client.Client;
 
-public record ClientUpdateResponse (
-        String id,
+public record ClientSearchItem(
+        String clientId,
         String name,
         String contactPhone
 ) {
-    public static ClientUpdateResponse from(Client client) {
-        return new ClientUpdateResponse(
+
+    public static ClientSearchItem from(Client client) {
+        return new ClientSearchItem(
                 client.getId(),
                 client.getName(),
                 client.getContactPhone()
