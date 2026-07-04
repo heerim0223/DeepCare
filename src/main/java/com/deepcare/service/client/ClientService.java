@@ -77,8 +77,7 @@ public class ClientService {
 
     // C-2: 클라이언트 등록
     public ClientCreateResponse createClient(ClientCreateRequest request) {
-        User primaryWorker = userRepository.findById(request.primaryWorkerUserId())
-                .orElseThrow(() -> new IllegalArgumentException("담당자를 찾을 수 없습니다."));
+        User primaryWorker = getPrimaryWorkerEntity(request.primaryWorkerUserId());
 
         Client client = Client.builder()
                         .name(request.name())
@@ -97,16 +96,14 @@ public class ClientService {
 
     // C-3: 클라이언트 상세 조회
     public ClientGetResponse getClient(String clientId) {
-        Client client = clientRepository.findById(clientId)
-                .orElseThrow(() -> new IllegalArgumentException("클라이언트를 찾을 수 없습니다."));
+        Client client = getClientEntity(clientId);
 
         return ClientGetResponse.from(client);
     }
 
     // C-4: 클라이언트 정보 수정
     public ClientUpdateResponse updateClient(String clientId, ClientUpdateRequest request) {
-        Client client = clientRepository.findById(clientId)
-                .orElseThrow(() -> new IllegalArgumentException("클라이언트를 찾을 수 없습니다."));
+        Client client = getClientEntity(clientId);
 
         client.update(
                 request.name(),
@@ -124,8 +121,7 @@ public class ClientService {
 
     // C-5: 클라이언트 삭제(비활성화)
     public void deactivateClient(String clientId) {
-        Client client = clientRepository.findById(clientId)
-                .orElseThrow(() -> new IllegalArgumentException("클라이언트를 찾을 수 없습니다."));
+        Client client = getClientEntity(clientId);
 
         client.deactivate();
     }
@@ -139,8 +135,7 @@ public class ClientService {
 
     // C-7: 내담자 앱 접근 링크 발송
     public SendAccessLinkResponse sendAccessLink(String clientId) {
-        Client client = clientRepository.findById(clientId)
-                .orElseThrow(() -> new IllegalArgumentException("클라이언트를 찾을 수 없습니다."));
+        Client client = getClientEntity(clientId);
 
         // TODO: 외부 서비스(SMS / Email 발송) 호출 로직 구현
         // smsService.send(client.getContactPhone(), accessLink);
@@ -171,8 +166,7 @@ public class ClientService {
 
     // C-8: 내담자 앱 접근 링크 상태 조회
     public GetAccessLinkStatusResponse getAccessLinkStatus(String clientId) {
-        AccessLink accessLink = accessLinkRepository.findByClient_Id(clientId)
-                .orElseThrow(() -> new IllegalArgumentException("접근 링크를 찾을 수 없습니다."));
+        AccessLink accessLink = getAccessLinkStatusEntity(clientId);
 
         if(accessLink.isExpired()) {
             accessLink.expire();
@@ -181,4 +175,20 @@ public class ClientService {
         return GetAccessLinkStatusResponse.from(accessLink);
     }
 
+    // ====
+
+    private Client getClientEntity(String clientId) {
+        return clientRepository.findById(clientId)
+                .orElseThrow(() -> new IllegalArgumentException("클라이언트를 찾을 수 없습니다."));
+    }
+
+    private User getPrimaryWorkerEntity(String primaryUserId) {
+        return userRepository.findById(primaryUserId)
+                .orElseThrow(() -> new IllegalArgumentException("담당자를 찾을 수 없습니다."));
+    }
+
+    private AccessLink getAccessLinkStatusEntity(String clientId) {
+        return accessLinkRepository.findByClient_Id(clientId)
+                .orElseThrow(() -> new IllegalArgumentException("접근 링크를 찾을 수 없습니다."));
+    }
 }

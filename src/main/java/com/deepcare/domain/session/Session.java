@@ -87,6 +87,7 @@ public class Session {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+
     public void update(Integer number, LocalDate date, LocalDateTime timeStart, LocalDateTime timeEnd, Integer durationMin, Method method, Type type, Status status) {
         this.number = number;
         this.date = date;

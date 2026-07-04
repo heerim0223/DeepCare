@@ -1,83 +1,141 @@
 package com.deepcare.controller.consultationFlow;
 
-import org.springframework.web.bind.annotation.*;
+import com.deepcare.dto.consultationFlow.request.CaseStageCreateRequest;
+import com.deepcare.dto.consultationFlow.request.CrisisChecklistUpdateRequest;
+import com.deepcare.dto.consultationFlow.request.CrisisProtocolCreateRequest;
+import com.deepcare.dto.consultationFlow.request.ProgramApplicationCreateRequest;
+import com.deepcare.dto.consultationFlow.request.ProgramStatusChangeRequest;
+import com.deepcare.dto.consultationFlow.request.SpeakerConfigRequest;
+import com.deepcare.dto.consultationFlow.response.CaseStageCreateResponse;
+import com.deepcare.dto.consultationFlow.response.CaseStageListResponse;
+import com.deepcare.dto.consultationFlow.response.CaseStageProgressResponse;
+import com.deepcare.dto.consultationFlow.response.CrisisChecklistResponse;
+import com.deepcare.dto.consultationFlow.response.CrisisProtocolCreateResponse;
+import com.deepcare.dto.consultationFlow.response.ProgramApplicationCreateResponse;
+import com.deepcare.dto.consultationFlow.response.ProgramApplicationListResponse;
+import com.deepcare.dto.consultationFlow.response.ProgramApplicationResponse;
+import com.deepcare.dto.consultationFlow.response.SpeakerConfigResponse;
+import com.deepcare.service.consultationFlow.ConsultationFlowService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-// 상담 유형별 플로우
 @RestController
+@RequiredArgsConstructor
 public class ConsultationFlowController {
 
-    // FL-1: [위기개입] 위기 프로토콜 활성화
+    private final ConsultationFlowService consultationFlowService;
+
+    // F-1: [위기개입] 위기 프로토콜 활성화
     @PostMapping("/sessions/{session_id}/crisis-protocol")
-    public String activateCrisisProtocol(@PathVariable("session_id") String sessionId) {
-        // TODO: 슈퍼바이저·관리자 Push 즉시 발송
-        return "";
+    public ResponseEntity<CrisisProtocolCreateResponse> activateCrisisProtocol(
+            @PathVariable("session_id") String sessionId,
+            @RequestBody CrisisProtocolCreateRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                consultationFlowService.activateCrisisProtocol(sessionId, request)
+        );
     }
 
-    // FL-2: [위기개입] 위기조치 체크리스트 조회
+    // F-2: [위기개입] 위기조치 체크리스트 조회
     @GetMapping("/sessions/{session_id}/crisis-checklist")
-    public String getCrisisChecklist(@PathVariable("session_id") String sessionId) {
-        // TODO: 필수 안전 확인 항목
-        return "";
+    public ResponseEntity<CrisisChecklistResponse> getCrisisChecklist(
+            @PathVariable("session_id") String sessionId
+    ) {
+        return ResponseEntity.ok(
+                consultationFlowService.getCrisisChecklist(sessionId)
+        );
     }
 
-    // FL-3: [위기개입] 체크리스트 완료 처리
+    // F-3: [위기개입] 체크리스트 완료 처리
     @PatchMapping("/sessions/{session_id}/crisis-checklist")
-    public String completeCrisisChecklist(@PathVariable("session_id") String sessionId) {
-        // TODO: 미완료 시 회기 저장 불가
-        return "";
+    public ResponseEntity<CrisisChecklistResponse> completeCrisisChecklist(
+            @PathVariable("session_id") String sessionId,
+            @RequestBody CrisisChecklistUpdateRequest request
+    ) {
+        return ResponseEntity.ok(
+                consultationFlowService.completeCrisisChecklist(sessionId, request)
+        );
     }
 
-    // FL-4: [프로그램 신청] 신청 등록
+    // F-4: [프로그램 신청] 신청 등록
     @PostMapping("/clients/{client_id}/programs")
-    public String createProgramStatus(@PathVariable("client_id") String clientId) {
-        // TODO: 자격조건 자동 체크
-        return "";
+    public ResponseEntity<ProgramApplicationCreateResponse> createProgramApplication(
+            @PathVariable("client_id") String clientId,
+            @RequestBody ProgramApplicationCreateRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                consultationFlowService.createProgramApplication(clientId, request)
+        );
     }
 
-    // FL-5: [프로그램 신청] 신청 현황 조회
+    // F-5: [프로그램 신청] 신청 현황 조회
     @GetMapping("/clients/{client_id}/programs")
-    public String getProgramStatus(
+    public ResponseEntity<ProgramApplicationListResponse> getProgramApplications(
             @PathVariable("client_id") String clientId
     ) {
-        // TODO: 접수→심사→결정→통보 단계
-        return "";
+        return ResponseEntity.ok(
+                consultationFlowService.getProgramApplications(clientId)
+        );
     }
 
-    // FL-6: [프로그램 신청] 신청 상태 변경
+    // F-6: [프로그램 신청] 신청 상태 변경
     @PatchMapping("/clients/{client_id}/programs/{prog_id}")
-    public String changeProgramStatus(
+    public ResponseEntity<ProgramApplicationResponse> changeProgramStatus(
             @PathVariable("client_id") String clientId,
-            @PathVariable("prog_id") String progId
+            @PathVariable("prog_id") String progId,
+            @RequestBody ProgramStatusChangeRequest request
     ) {
-        // TODO: 필요 서류 제출 현황 연동
-        return "";
+        return ResponseEntity.ok(
+                consultationFlowService.changeProgramStatus(clientId, progId, request)
+        );
     }
 
-    // FL-7: [사례관리] 단계 등록
+    // F-7: [사례관리] 단계 등록
     @PostMapping("/clients/{client_id}/case-stages")
-    public String createCaseStage(@PathVariable("client_id") String clientId) {
-        // TODO: 초기사정→욕구사정→계획→개입→모니터링→종결
-        return "";
+    public ResponseEntity<CaseStageCreateResponse> createCaseStage(
+            @PathVariable("client_id") String clientId,
+            @RequestBody CaseStageCreateRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                consultationFlowService.createCaseStage(clientId, request)
+        );
     }
 
-    // FL-8: [사례관리] 단계 목록 조회
+    // F-8: [사례관리] 단계 목록 조회
     @GetMapping("/clients/{client_id}/case-stages")
-    public String getCaseStageList(@PathVariable("client_id") String clientId) {
-        return "";
+    public ResponseEntity<CaseStageListResponse> getCaseStageList(
+            @PathVariable("client_id") String clientId
+    ) {
+        return ResponseEntity.ok(
+                consultationFlowService.getCaseStageList(clientId)
+        );
     }
 
-    // FL-9: [사례관리] 목표 달성률 조회
+    // F-9: [사례관리] 목표 달성률 조회
     @GetMapping("/clients/{client_id}/case-stages/progress")
-    public String getCaseStageProgress(@PathVariable("client_id") String clientId) {
-        // TODO: 설정 목표 대비 현황 자동 산출
-        return "";
+    public ResponseEntity<CaseStageProgressResponse> getCaseStageProgress(
+            @PathVariable("client_id") String clientId
+    ) {
+        return ResponseEntity.ok(
+                consultationFlowService.getCaseStageProgress(clientId)
+        );
     }
 
-    // FL-10: [가족상담] 화자 분리 설정
+    // F-10: [가족상담] 화자 분리 설정
     @PatchMapping("/sessions/{session_id}/speaker-config")
-    public String setSpeakerConfig(@PathVariable("session_id") String sessionId) {
-        // TODO: 가족 구성원별 발언 분리 STT
-        return "";
+    public ResponseEntity<SpeakerConfigResponse> setSpeakerConfig(
+            @PathVariable("session_id") String sessionId,
+            @RequestBody SpeakerConfigRequest request
+    ) {
+        return ResponseEntity.ok(
+                consultationFlowService.setSpeakerConfig(sessionId, request)
+        );
     }
-
 }

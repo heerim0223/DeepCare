@@ -39,4 +39,14 @@ public class SessionParticipant {
     @Column(name = "created_at", nullable = false)
     @CreatedDate
     private LocalDateTime createdAt;
+
+    // ====
+
+    @Column(name = "speaker_index")
+    // TODO: STT 화자분리 라벨(0, 1, 2)과 매핑
+    private Integer speakerIndex;
+
+    public void changeSpeakerIndex(Integer speakerIndex) {
+        this.speakerIndex = speakerIndex;
+    }
 }

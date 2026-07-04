@@ -41,11 +41,9 @@ public class SessionService {
     // S-2: 회기 등록 (상담 시작)
     // TODO: 상담 유형 선택 → 플로우 자동 결정 (위기개입/프로그램신청/사례관리/가족상담 등 ConsultationFlow 연동)
     public SessionCreateResponse createSession(String clientId, SessionCreateRequest request) {
-        Client client = clientRepository.findById(clientId)
-                .orElseThrow(() -> new IllegalArgumentException("클라이언트를 찾을 수 없습니다."));
+        Client client = getClientEntity(clientId);
 
-        User workerUser = userRepository.findById(request.workerUserId())
-                .orElseThrow(() -> new IllegalArgumentException("담당자를 찾을 수 없습니다."));
+        User workerUser = getWorkerUserEntity(request.workerUserId());
 
         Integer number = request.number() != null
                 ? request.number()
@@ -72,16 +70,14 @@ public class SessionService {
 
     // S-3: 회기 상세
     public GetSessionResponse getSession(String sessionId) {
-        Session session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new IllegalArgumentException("회기를 찾을 수 없습니다."));
+        Session session = getSessionEntity(sessionId);
 
         return GetSessionResponse.from(session);
     }
 
     // S-4: 회기 수정
     public SessionUpdateResponse updateSession(String sessionId, SessionUpdateRequest request) {
-        Session session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new IllegalArgumentException("회기를 찾을 수 없습니다."));
+        Session session = getSessionEntity(sessionId);
 
         session.update(
             request.number(),
@@ -99,8 +95,7 @@ public class SessionService {
 
     // S-5: 회기 삭제
     public void removeSession(String sessionId) {
-        Session session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new IllegalArgumentException("회기를 찾을 수 없습니다."));
+        Session session = getSessionEntity(sessionId);
 
         session.remove();
     }
@@ -117,5 +112,22 @@ public class SessionService {
                 .toList();
 
         return SessionUpcomingGetResponse.of(items);
+    }
+
+    // ====
+
+    private Client getClientEntity(String clientId) {
+        return clientRepository.findById(clientId)
+                .orElseThrow(() -> new IllegalArgumentException("클라이언트를 찾을 수 없습니다."));
+    }
+
+    private User getWorkerUserEntity(String workerUserId) {
+        return userRepository.findById(workerUserId)
+                .orElseThrow(() -> new IllegalArgumentException("담당자를 찾을 수 없습니다."));
+    }
+
+    private Session getSessionEntity(String sessionId) {
+        return sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new IllegalArgumentException("회기를 찾을 수 없습니다."));
     }
 }

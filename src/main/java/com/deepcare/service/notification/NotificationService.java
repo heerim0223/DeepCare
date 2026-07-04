@@ -2,6 +2,7 @@ package com.deepcare.service.notification;
 
 import com.deepcare.domain.notification.Notification;
 import com.deepcare.domain.notification.Type;
+import com.deepcare.domain.consultationFlow.CrisisProtocol;
 import com.deepcare.domain.riskAssessment.RiskAssessment;
 import com.deepcare.domain.session.Session;
 import com.deepcare.domain.user.User;
@@ -60,5 +61,23 @@ public class NotificationService {
         );
 
         return notificationRepository.save(notification);
+    }
+
+    public List<Notification> sendCrisisProtocolAlert(Session session, CrisisProtocol crisisProtocol) {
+        Set<User> recipients = new LinkedHashSet<>();
+
+        if (session.getSupervisorUser() != null) {
+            recipients.add(session.getSupervisorUser());
+        }
+        recipients.addAll(userRepository.findByUserTypeIn(List.of(UserType.SUPERVISOR, UserType.ORG_ADMIN)));
+
+        String title = "[위기개입] " + session.getClient().getName() + " 클라이언트";
+        String body = "위기 유형: " + crisisProtocol.getCrisisType()
+                + " / 회기: " + session.getId()
+                + " - 위기조치 체크리스트 확인이 필요합니다.";
+
+        return recipients.stream()
+                .map(recipient -> notify(recipient, Type.RISK, title, body, session))
+                .toList();
     }
 }
