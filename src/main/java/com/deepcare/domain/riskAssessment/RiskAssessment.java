@@ -78,4 +78,72 @@ public class RiskAssessment {
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    public static RiskAssessment create(
+            Session session,
+            Boolean riskFlag,
+            List<RiskType> riskTypes,
+            RiskLevel riskLevel,
+            SuicideIdeation suicideIdeation,
+            Boolean selfHarmYn,
+            Boolean abuseSuspicionYn,
+            Boolean dvYn,
+            Boolean substanceUseYn,
+            Boolean neglectYn,
+            String riskActionTaken,
+            Boolean reportYn,
+            LocalDate reportDate,
+            String reportAgency
+    ) {
+        return RiskAssessment.builder()
+                .session(session)
+                .riskFlag(riskFlag)
+                .riskTypes(riskTypes)
+                .riskLevel(riskLevel)
+                .suicideIdeation(suicideIdeation)
+                .selfHarmYn(selfHarmYn)
+                .abuseSuspicionYn(abuseSuspicionYn)
+                .dvYn(dvYn)
+                .substanceUseYn(substanceUseYn)
+                .neglectYn(neglectYn)
+                .riskActionTaken(riskActionTaken)
+                .reportYn(reportYn)
+                .reportDate(reportDate)
+                .reportAgency(reportAgency)
+                .build();
+    }
+
+    public void update(
+            Boolean riskFlag,
+            List<RiskType> riskTypes,
+            RiskLevel riskLevel,
+            SuicideIdeation suicideIdeation,
+            Boolean selfHarmYn,
+            Boolean abuseSuspicionYn,
+            Boolean dvYn,
+            Boolean substanceUseYn,
+            Boolean neglectYn,
+            String riskActionTaken,
+            Boolean reportYn,
+            LocalDate reportDate,
+            String reportAgency
+    ) {
+        this.riskFlag = riskFlag;
+        this.riskTypes = riskTypes;
+        this.riskLevel = riskLevel;
+        this.suicideIdeation = suicideIdeation;
+        this.selfHarmYn = selfHarmYn;
+        this.abuseSuspicionYn = abuseSuspicionYn;
+        this.dvYn = dvYn;
+        this.substanceUseYn = substanceUseYn;
+        this.neglectYn = neglectYn;
+        this.riskActionTaken = riskActionTaken;
+        this.reportYn = reportYn;
+        this.reportDate = reportDate;
+        this.reportAgency = reportAgency;
+    }
+
+    public boolean isHighRisk() {
+        return this.riskLevel == RiskLevel.HIGH;
+    }
 }

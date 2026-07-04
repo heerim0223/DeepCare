@@ -1,4 +1,4 @@
-package com.deepcare;
+package com.deepcare.util;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

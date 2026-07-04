@@ -1,18 +1,20 @@
 package com.deepcare.dto.client.response;
 
 import com.deepcare.domain.client.Client;
+import com.deepcare.domain.riskAssessment.RiskLevel;
 
-// TODO: RiskLevel 필드 추가
 public record ClientListItem(
     String id,
     String name,
-    String contactPhone
+    String contactPhone,
+    RiskLevel riskLevel
 ) {
-    public static ClientListItem from(Client client) {
+    public static ClientListItem of(Client client, RiskLevel riskLevel) {
         return new ClientListItem(
                 client.getId(),
                 client.getName(),
-                client.getContactPhone()
+                client.getContactPhone(),
+                riskLevel
         );
     }
 }

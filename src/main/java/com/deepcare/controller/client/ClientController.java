@@ -4,15 +4,17 @@ import com.deepcare.dto.client.request.ClientCreateRequest;
 import com.deepcare.dto.client.request.ClientUpdateRequest;
 import com.deepcare.dto.client.response.*;
 import com.deepcare.service.client.ClientService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 // 클라이언트 관리
 @RestController
 @RequestMapping("/clients")
+@RequiredArgsConstructor
 public class ClientController {
 
-    private ClientService clientService;
+    private final ClientService clientService;
 
     // C-1: 클라이언트 목록 조회([R-4: 위험 클라이언트 목록] 포함)
     @GetMapping

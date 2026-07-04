@@ -3,9 +3,7 @@ package com.deepcare.domain.session;
 import com.deepcare.domain.client.Client;
 import com.deepcare.domain.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,8 +13,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
+@Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "sessions")
@@ -45,7 +44,7 @@ public class Session {
     @Column(name = "session_method", length = 20, nullable = false)
     private Method method;
 
-    @Column(name = "session_location", length = 100, nullable = true)
+    @Column(name = "session_location", length = 100)
     private String location;
 
     @Enumerated(EnumType.STRING)
@@ -78,4 +77,29 @@ public class Session {
     @Column(name = "updated_at", nullable = false)
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    // ====
+
+    @Column(name = "deleted", nullable = false)
+    @ColumnDefault("false")
+    private Boolean deleted = false;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
+    public void update(Integer number, LocalDate date, LocalDateTime timeStart, LocalDateTime timeEnd, Integer durationMin, Method method, Type type, Status status) {
+        this.number = number;
+        this.date = date;
+        this.timeStart = timeStart;
+        this.timeEnd = timeEnd;
+        this.durationMin = durationMin;
+        this.method = method;
+        this.type = type;
+        this.status = status;
+    }
+
+    public void remove() {
+        this.deleted = true;
+        this.deletedAt = LocalDateTime.now();
+    }
 }

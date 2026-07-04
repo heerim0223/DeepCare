@@ -49,6 +49,7 @@ public class AccessLink {
     public static AccessLink create(Client client, String token, LocalDateTime expiresAt) {
         return AccessLink.builder()
                 .client(client)
+                .token(token)
                 .status(Status.PENDING)
                 .expiresAt(expiresAt)
                 .build();

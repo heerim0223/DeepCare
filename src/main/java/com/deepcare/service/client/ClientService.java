@@ -2,12 +2,17 @@ package com.deepcare.service.client;
 
 import com.deepcare.domain.accessLink.AccessLink;
 import com.deepcare.domain.client.Client;
+import com.deepcare.domain.riskAssessment.RiskAssessment;
+import com.deepcare.domain.riskAssessment.RiskLevel;
+import com.deepcare.domain.session.Session;
 import com.deepcare.domain.user.User;
 import com.deepcare.dto.client.request.ClientCreateRequest;
 import com.deepcare.dto.client.request.ClientUpdateRequest;
 import com.deepcare.dto.client.response.*;
 import com.deepcare.repository.accessLink.AccessLinkRepository;
 import com.deepcare.repository.client.ClientRepository;
+import com.deepcare.repository.riskAssessment.RiskAssessmentRepository;
+import com.deepcare.repository.session.SessionRepository;
 import com.deepcare.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -34,14 +40,39 @@ public class ClientService {
     private final ClientRepository clientRepository;
     private final UserRepository userRepository;
     private final AccessLinkRepository accessLinkRepository;
+    private final SessionRepository sessionRepository;
+    private final RiskAssessmentRepository riskAssessmentRepository;
 
-    // C-1: 클라이언트 목록 조회([R-4: 위험 클라이언트 목록] 포함)
+    // C-1: 클라이언트 목록 조회 ([R-4: 위험 클라이언트 목록] 포함)
     public ClientListGetResponse getClientList(String riskLevel) {
-        List<Client> clients = clientRepository.findAll();
+        List<Client> clients = clientRepository.findByDeletedFalse();
 
-        // TODO: riskLevel 사용
+        List<ClientListItem> items = clients.stream()
+                .map(client -> ClientListItem.of(client, findLatestRiskLevel(client.getId())))
+                .filter(item -> matchesRiskLevel(item.riskLevel(), riskLevel))
+                .toList();
 
-        return ClientListGetResponse.from(clients);
+        return ClientListGetResponse.of(items);
+    }
+
+    private boolean matchesRiskLevel(RiskLevel actual, String requested) {
+        if (requested == null || requested.isBlank()) {
+            return true;
+        }
+        return actual != null && actual.name().equalsIgnoreCase(requested);
+    }
+
+    // 클라이언트의 가장 최근 회기에 기록된 위험 수준 조회
+    private RiskLevel findLatestRiskLevel(String clientId) {
+        List<Session> sessions = sessionRepository.findByClient_IdOrderByDateDesc(clientId);
+
+        return sessions.stream()
+                .map(session -> riskAssessmentRepository.findBySession_Id(session.getId()).orElse(null))
+                .filter(Objects::nonNull)
+                .map(RiskAssessment::getRiskLevel)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
     }
 
     // C-2: 클라이언트 등록
@@ -114,21 +145,26 @@ public class ClientService {
         // TODO: 외부 서비스(SMS / Email 발송) 호출 로직 구현
         // smsService.send(client.getContactPhone(), accessLink);
 
-        /*
-            TODO: 호출할 때마다 새 링크 생성하는 것을 해결
+        AccessLink existing = accessLinkRepository.findByClient_Id(clientId).orElse(null);
+        boolean reusable = existing != null
+                && existing.getStatus() == com.deepcare.domain.accessLink.Status.PENDING
+                && !existing.isExpired();
 
-            둘 중 하나의 방법을 택함
-            1. 기존 PENDING 링크가 있으면 재사용
-            2. 기존 링크를 EXPIRED 처리한 뒤 새로운 링크 생성
-        */
+        AccessLink accessLink;
+        if (reusable) {
+            // 기존 PENDING 링크가 있으면 재사용
+            accessLink = existing;
+        } else {
+            if (existing != null && existing.getStatus() != com.deepcare.domain.accessLink.Status.JOINED) {
+                existing.expire();
+            }
 
-        String token = UUID.randomUUID().toString();
+            String token = UUID.randomUUID().toString();
+            LocalDateTime expiresAt = LocalDateTime.now().plusDays(7);
 
-        LocalDateTime expiresAt = LocalDateTime.now().plusDays(7);
-
-        AccessLink accessLink = AccessLink.create(client, token, expiresAt);
-
-        accessLinkRepository.save(accessLink);
+            accessLink = AccessLink.create(client, token, expiresAt);
+            accessLinkRepository.save(accessLink);
+        }
 
         return SendAccessLinkResponse.from(client, accessLink);
     }

@@ -1,4 +1,4 @@
 package com.deepcare.dto.session.response;
 
-public class RemoveSessionResponse {
+public class SessionRemoveResponse {
 }
